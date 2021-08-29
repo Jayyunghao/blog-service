@@ -23,11 +23,11 @@ func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
-		Addr:      ":" + global.ServerSetting.HttpPort,
-		Handler:     router,
-		ReadTimeout: global.ServerSetting.ReadTimeout,
-		WriteTimeout: global.ServerSetting.WriteTimeout,
-		MaxHeaderBytes: 1<<20,
+		Addr:           ":" + global.ServerSetting.HttpPort,
+		Handler:        router,
+		ReadTimeout:    global.ServerSetting.ReadTimeout,
+		WriteTimeout:   global.ServerSetting.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
 	}
 	global.Logger.Infof("%s: go-programming-tour-book/%s", "eddycjy", "blog_service")
 	s.ListenAndServe()
@@ -36,11 +36,11 @@ func main() {
 func init() {
 	err := setupSetting()
 	if err != nil {
-		log.Fatalf("init.setupSetting err :%v",err)
+		log.Fatalf("init.setupSetting err :%v", err)
 	}
 	err = setupLogger()
 	if err != nil {
-		log.Fatalf("init.setupLogger err :%v",err)
+		log.Fatalf("init.setupLogger err :%v", err)
 	}
 }
 
@@ -49,19 +49,19 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
-	err = setting.ReadSection("Server",&global.ServerSetting)
+	err = setting.ReadSection("Server", &global.ServerSetting)
 	if err != nil {
 		return err
 	}
-	err = setting.ReadSection("App",&global.AppSetting)
+	err = setting.ReadSection("App", &global.AppSetting)
 	if err != nil {
 		return err
 	}
-	err = setting.ReadSection("Database",&global.DatabaseSetting)
+	err = setting.ReadSection("Database", &global.DatabaseSetting)
 	if err != nil {
 		return err
 	}
-	fmt.Sprintf("\nserverSetting : %v\nappSetting : %v\n Database: %v\n",global.ServerSetting,global.AppSetting,global.DatabaseSetting)
+	fmt.Sprintf("\nserverSetting : %v\nappSetting : %v\n Database: %v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting)
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	return nil
@@ -69,11 +69,11 @@ func setupSetting() error {
 
 func setupLogger() error {
 	global.Logger = logger.NewLogger(&lumberjack.Logger{
-		Filename: global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt,
-		MaxSize:  600,
-		MaxAge:   10,
+		Filename:  global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt,
+		MaxSize:   600,
+		MaxAge:    10,
 		LocalTime: true,
-	},"",log.LstdFlags).WithCaller(2)
+	}, "", log.LstdFlags).WithCaller(2)
 	return nil
 }
 

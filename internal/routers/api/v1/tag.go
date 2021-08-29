@@ -3,14 +3,13 @@ package v1
 import "github.com/gin-gonic/gin"
 
 type Tag struct {
-
 }
 
 func NewTag() Tag {
 	return Tag{}
 }
 
-func(t Tag) Get(c *gin.Context) {}
+func (t Tag) Get(c *gin.Context) {}
 
 // @Summary 获取多个标签
 // @Produce  json
@@ -22,7 +21,7 @@ func(t Tag) Get(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [get]
-func(t Tag) List(c *gin.Context) {}
+func (t Tag) List(c *gin.Context) {}
 
 // @Summary 新增标签
 // @Produce  json
@@ -33,7 +32,7 @@ func(t Tag) List(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [post]
-func(t Tag) Create(c *gin.Context) {}
+func (t Tag) Create(c *gin.Context) {}
 
 // @Summary 更新标签
 // @Produce  json
@@ -45,7 +44,7 @@ func(t Tag) Create(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags/{id} [put]
-func(t Tag) Update(c *gin.Context) {}
+func (t Tag) Update(c *gin.Context) {}
 
 // @Summary 删除标签
 // @Produce  json
@@ -54,4 +53,4 @@ func(t Tag) Update(c *gin.Context) {}
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags/{id} [delete]
-func(t Tag) Delete(c *gin.Context) {}
+func (t Tag) Delete(c *gin.Context) {}

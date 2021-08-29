@@ -30,7 +30,7 @@ func Translations() gin.HandlerFunc {
 				_ = zh_translations.RegisterDefaultTranslations(v, trans)
 				break
 			}
-			c.Set("trans",trans)
+			c.Set("trans", trans)
 		}
 		c.Next()
 	}
