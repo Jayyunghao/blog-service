@@ -167,7 +167,7 @@ func (l *Logger) Warn(format string, v ...interface{}) {
 	l.Output(LevelWarn, fmt.Sprintf(format, v...))
 }
 
-func (l *Logger) Error(format string, v ...interface{}) {
+func (l *Logger) Errorf(format string, v ...interface{}) {
 	l.Output(LevelError, fmt.Sprintf(format, v...))
 }
 
