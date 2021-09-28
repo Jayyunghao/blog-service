@@ -9,6 +9,7 @@ type Setting struct {
 func NewSetting() (*Setting, error) {
 	vp := viper.New()
 	vp.SetConfigName("config")
+	//vp.AddConfigPath("Practice/go-programming-tour-book/blog-service/configs/")
 	vp.AddConfigPath("configs/")
 	vp.SetConfigType("yaml")
 	err := vp.ReadInConfig()

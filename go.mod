@@ -3,6 +3,7 @@ module Practice/go-programming-tour-book/blog-service
 go 1.14
 
 require (
+	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
@@ -12,6 +13,7 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.6.1
+	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/json-iterator/go v1.1.11 // indirect
@@ -42,7 +44,7 @@ require (
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/text v0.3.6 // indirect
-	golang.org/x/tools v0.1.2 // indirect
+	golang.org/x/tools v0.1.2
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
