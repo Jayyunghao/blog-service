@@ -14,7 +14,7 @@ func (a Article) Count(db *gorm.DB) (int, error) {
 	}
 	if a.Content != "" {
 		searchStr := "%" + a.Content + "%"
-		db =db.Where("content like ?", searchStr)
+		db = db.Where("content like ?", searchStr)
 	}
 	db = db.Where("state = ?", a.State)
 	if err := db.Model(&a).Where("is_del = ?", 0).Count(&count).Error; err != nil {

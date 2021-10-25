@@ -7,6 +7,7 @@ import (
 	"Practice/go-programming-tour-book/blog-service/pkg/convert"
 	"Practice/go-programming-tour-book/blog-service/pkg/errcode"
 	"github.com/gin-gonic/gin"
+
 	"fmt"
 )
 
@@ -34,13 +35,13 @@ func (t Tag) List(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Errorf("app.BindAndValid errs :%s %v", errs)
+		global.Logger.Errorf("app.BindAndValid errs :%v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
 	svc := service.New(c.Request.Context())
 	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
-	fmt.Printf("routers svc.CountTag start, name:%s,state:%d\n",param.Name,param.State)
+	fmt.Printf("routers svc.CountTag start, name:%s,state:%d\n", param.Name, param.State)
 	totalRows, err := svc.CountTag(&service.CountTagRequest{Name: param.Name, State: param.State})
 	if err != nil {
 		global.Logger.Errorf("svc.CountTag err: %v", err)
@@ -52,7 +53,7 @@ func (t Tag) List(c *gin.Context) {
 	tags, err := svc.GetTagList(&param, &pager)
 	if err != nil {
 		global.Logger.Errorf("svc.GetTagList err: %v", err)
-		response.ToErrorResponse(errcode.ErrorCountTagFail)
+		response.ToErrorResponse(errcode.ErrorGetTagListFail)
 		return
 	}
 	response.ToResponseList(tags, totalRows)
@@ -73,7 +74,7 @@ func (t Tag) Create(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Errorf("app.BindAndValid errs :%s %v", errs)
+		global.Logger.Errorf("app.BindAndValid errs :%v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
@@ -103,7 +104,7 @@ func (t Tag) Update(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Errorf("app.BindAndValid errs :%s %v", errs)
+		global.Logger.Errorf("app.BindAndValid errs :%v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
@@ -130,7 +131,7 @@ func (t Tag) Delete(c *gin.Context) {
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
 	if !valid {
-		global.Logger.Errorf("app.BindAndValid errs :%s %v", errs)
+		global.Logger.Errorf("app.BindAndValid errs :%v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}

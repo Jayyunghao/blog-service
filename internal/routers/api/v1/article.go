@@ -1,7 +1,10 @@
 package v1
 
 import (
+	"Practice/go-programming-tour-book/blog-service/global"
+	"Practice/go-programming-tour-book/blog-service/internal/service"
 	"Practice/go-programming-tour-book/blog-service/pkg/app"
+	"Practice/go-programming-tour-book/blog-service/pkg/convert"
 	"Practice/go-programming-tour-book/blog-service/pkg/errcode"
 	"github.com/gin-gonic/gin"
 )
@@ -32,8 +35,28 @@ func (a Article) Get(c *gin.Context) {
 // @Failure 400 {object} errcode.Error "请求错误"
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles [get]
-func (a Article) List(c *gin.Context)   {
+func (a Article) List(c *gin.Context) {
+	param := service.ArticleListRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid err: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+	}
+	svc := service.New(c.Request.Context())
+	pager := app.Pager{PageSize: app.GetPageSize(c), Page: app.GetPage(c)}
+	count, err := svc.CountArticle(&service.CountArticleRequest{Title: param.Title, Desc: param.Desc, Content: param.Content, State: param.State})
+	if err != nil {
+		global.Logger.Errorf("svc.CountArticle err :%v", err)
+		response.ToErrorResponse(errcode.ErrorCountArticleFail)
+	}
 
+	articles, err := svc.GetArticleList(&service.ArticleListRequest{Title: param.Title, Desc: param.Desc, Content: param.Content, State: param.State}, &pager)
+	if err != nil {
+		global.Logger.Errorf("svc.GetArticleList err:%v", err)
+		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+	}
+	response.ToResponseList(articles, count)
 }
 
 // @Summary 添加文章
@@ -48,7 +71,22 @@ func (a Article) List(c *gin.Context)   {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles [post]
 func (a Article) Create(c *gin.Context) {
-
+	param := service.CreateArticleRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid err :%v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+	}
+	svc := service.New(c.Request.Context())
+	err := svc.CreateArticle(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.CreateArticle err:%v", err.Error())
+		response.ToErrorResponse(errcode.ErrorCreateArticleFail)
+		return
+	}
+	response.ToResponse(gin.H{})
+	return
 }
 
 // @Summary 更新文章
@@ -64,7 +102,23 @@ func (a Article) Create(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [put]
 func (a Article) Update(c *gin.Context) {
-
+	param := service.UpdateArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid errs:%v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+	svc := service.New(c.Request.Context())
+	err := svc.UpdateArticle(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.UpdateArticle err:%v", err)
+		response.ToErrorResponse(errcode.ErrorUpdateArticleFail)
+		return
+	}
+	response.ToResponse(gin.H{})
+	return
 }
 
 // @Summary 删除文章
@@ -75,5 +129,21 @@ func (a Article) Update(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/articles/{id} [delete]
 func (a Article) Delete(c *gin.Context) {
-
+	param := service.DeleteArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid errs :%v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
+	svc := service.New(c.Request.Context())
+	err := svc.DeleteArticle(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.DeleteArticle err:%v", err)
+		response.ToErrorResponse(errcode.ErrorDeleteArticleFail)
+		return
+	}
+	response.ToResponse(gin.H{})
+	return
 }

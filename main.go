@@ -77,7 +77,7 @@ func setupLogger() error {
 		MaxSize:   600,
 		MaxAge:    10,
 		LocalTime: true,
-	}, "", log.LstdFlags).WithCaller(2)
+	}, "", log.LstdFlags).WithCaller(2) //第二层调用栈信息是什么意思？
 	return nil
 }
 
