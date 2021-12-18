@@ -51,6 +51,10 @@ func (svc *Service) GetArticleList(param *ArticleListRequest, pager *app.Pager) 
 	return svc.dao.GetArticleList(param.Title, param.Desc, param.Content, param.State, pager.Page, pager.PageSize)
 }
 
+func (svc *Service) GetArticleById(id uint32) (model.Article, error) {
+	return svc.dao.GetArticleById(id)
+}
+
 func (svc *Service) CreateArticle(param *CreateArticleRequest) error {
 	return svc.dao.CreateArticle(param.Title, param.Desc, param.Content, param.State, param.CreateBy)
 }

@@ -44,6 +44,13 @@ func (a Article) List(db *gorm.DB, pageOffset, pageSize int) ([]*Article, error)
 	return articles, err
 }
 
+func (a Article) Get(db *gorm.DB) (Article, error) {
+	if err := db.Where("id = ?", a.ID).Find(&a).Error; err != nil {
+		return Article{}, err 
+	}
+	return a, nil 
+}
+
 func (a Article) Create(db *gorm.DB) error {
 	return db.Create(&a).Error
 }

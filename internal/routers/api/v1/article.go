@@ -6,6 +6,7 @@ import (
 	"Practice/go-programming-tour-book/blog-service/pkg/app"
 	"Practice/go-programming-tour-book/blog-service/pkg/convert"
 	"Practice/go-programming-tour-book/blog-service/pkg/errcode"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,8 +18,16 @@ func NewArticle() Article {
 }
 
 func (a Article) Get(c *gin.Context) {
-	app.NewResponse(c).ToErrorResponse(errcode.ServerError)
-	return
+	id := convert.StrTo(c.Param("id")).MustUInt32()
+	response := app.NewResponse(c)
+	svc := service.New(c)
+	article, err := svc.GetArticleById(id)
+	if err != nil {
+		global.Logger.Errorf("svc.GetArticleById err: %v", err)
+		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+		return
+	}
+	response.ToResponse(article)
 }
 
 //TODO
@@ -54,7 +63,7 @@ func (a Article) List(c *gin.Context) {
 	articles, err := svc.GetArticleList(&service.ArticleListRequest{Title: param.Title, Desc: param.Desc, Content: param.Content, State: param.State}, &pager)
 	if err != nil {
 		global.Logger.Errorf("svc.GetArticleList err:%v", err)
-		response.ToErrorResponse(errcode.ErrorGetArticleFail)
+		response.ToErrorResponse(errcode.ErrorGetArticleListFail)
 	}
 	response.ToResponseList(articles, count)
 }
@@ -86,7 +95,6 @@ func (a Article) Create(c *gin.Context) {
 		return
 	}
 	response.ToResponse(gin.H{})
-	return
 }
 
 // @Summary 更新文章
@@ -118,7 +126,6 @@ func (a Article) Update(c *gin.Context) {
 		return
 	}
 	response.ToResponse(gin.H{})
-	return
 }
 
 // @Summary 删除文章
@@ -145,5 +152,4 @@ func (a Article) Delete(c *gin.Context) {
 		return
 	}
 	response.ToResponse(gin.H{})
-	return
 }

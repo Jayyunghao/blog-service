@@ -26,6 +26,11 @@ func (d *Dao) GetTagList(name string, state uint8, page, pageSize int) ([]*model
 	return tag.List(d.engine, pageOffset, pageSize)
 }
 
+func (d *Dao) GetTagById(id uint32) (model.Tag, error) {
+	tag := model.Tag{Model: &model.Model{ID: id}}
+	return tag.Get(d.engine)
+}
+
 func (d *Dao) CreateTag(name string, state uint8, createBy string) error {
 	tag := model.Tag{
 		Name:  name,
@@ -61,6 +66,11 @@ func (d *Dao) GetArticleList(title, desc, content string, state uint8, page, pag
 	article := model.Article{Title: title, Desc: desc, Content: content, State: state}
 	pageOffset := app.GetPageOffset(page, pageSize)
 	return article.List(d.engine, pageOffset, pageSize)
+}
+
+func (d *Dao) GetArticleById(id uint32) (model.Article,error) {
+	article := model.Article{Model: &model.Model{ID: id}}
+	return article.Get(d.engine)
 }
 
 func (d *Dao) CreateArticle(title, desc, content string, state uint8, createBy string) error {

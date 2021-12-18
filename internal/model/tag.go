@@ -1,20 +1,16 @@
 package model
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func (t Tag) Count(db *gorm.DB) (int, error) {
-	fmt.Println("model/tag count 我进来了")
 	var count int
 	if t.Name != "" {
 		db = db.Where("name = ?", t.Name)
 	}
-	fmt.Println("开始db.Where")
 	db = db.Where("state = ?", t.State)
-	fmt.Println("model/tag count 开始sql请求")
 	if err := db.Model(&t).Where("is_del = ?", 0).Count(&count).Error; err != nil {
 		return 0, err
 	}
@@ -35,6 +31,13 @@ func (t Tag) List(db *gorm.DB, pageOffset, pageSize int) ([]*Tag, error) {
 		return nil, err
 	}
 	return tags, nil
+}
+
+func (t Tag) Get(db *gorm.DB) (Tag, error) {
+	if err := db.Where("id=?", t.ID).Find(&t).Error; err != nil {
+		return Tag{}, err
+	}
+	return t, nil
 }
 
 func (t Tag) Create(db *gorm.DB) error {

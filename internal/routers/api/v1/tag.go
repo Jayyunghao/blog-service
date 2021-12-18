@@ -18,7 +18,19 @@ func NewTag() Tag {
 	return Tag{}
 }
 
-func (t Tag) Get(c *gin.Context) {}
+func (t Tag) Get(c *gin.Context) {
+	id := convert.StrTo(c.Param("id")).MustUInt32()
+	response := app.NewResponse(c)
+	svc := service.New(c.Request.Context())
+	tag,err := svc.GetTagById(id)
+	if err != nil {
+		global.Logger.Errorf("svc.GetTagById err:%v", err)
+		response.ToErrorResponse(errcode.ErrorGetTagFail)
+		return 
+	}
+	response.ToResponse(tag)
+	return 
+}
 
 // @Summary 获取多个标签
 // @Produce  json
