@@ -47,7 +47,7 @@ func (e *Error) WithDetails(details ...string) *Error {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("错误码:%d,错误信息: %s")
+	return fmt.Sprintf("错误码:%d,错误信息: %s", e.code, e.msg)
 }
 
 func (e *Error) StatusCode() int {

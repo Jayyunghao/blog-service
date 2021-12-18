@@ -46,9 +46,9 @@ func (a Article) List(db *gorm.DB, pageOffset, pageSize int) ([]*Article, error)
 
 func (a Article) Get(db *gorm.DB) (Article, error) {
 	if err := db.Where("id = ?", a.ID).Find(&a).Error; err != nil {
-		return Article{}, err 
+		return Article{}, err
 	}
-	return a, nil 
+	return a, nil
 }
 
 func (a Article) Create(db *gorm.DB) error {
@@ -56,7 +56,7 @@ func (a Article) Create(db *gorm.DB) error {
 }
 
 func (a Article) Update(db *gorm.DB, values interface{}) error {
-	if err := db.Model(&Article{}).Where("id = ? AND is_del = ?", a.ID, 0).Update(values).Error; err != nil {
+	if err := db.Model(&a).Where("id = ? AND is_del = ?", a.ID, 0).Update(values).Error; err != nil {
 		return err
 	}
 	return nil

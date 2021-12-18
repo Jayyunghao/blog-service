@@ -8,11 +8,12 @@ import (
 	"Practice/go-programming-tour-book/blog-service/pkg/logger"
 	setting2 "Practice/go-programming-tour-book/blog-service/pkg/setting"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // @title 博客系统
@@ -65,7 +66,7 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
-	fmt.Sprintf("\nserverSetting : %v\nappSetting : %v\n Database: %v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting)
+	fmt.Printf("\nserverSetting : %v\nappSetting : %v\n Database: %v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting)
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	return nil
