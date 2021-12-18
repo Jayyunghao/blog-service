@@ -19,10 +19,16 @@ func NewTag() Tag {
 }
 
 func (t Tag) Get(c *gin.Context) {
-	id := convert.StrTo(c.Param("id")).MustUInt32()
+	param := service.TagRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid errs :%v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+		return
+	}
 	svc := service.New(c.Request.Context())
-	tag,err := svc.GetTagById(id)
+	tag,err := svc.GetTagById(&param)
 	if err != nil {
 		global.Logger.Errorf("svc.GetTagById err:%v", err)
 		response.ToErrorResponse(errcode.ErrorGetTagFail)

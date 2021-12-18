@@ -18,10 +18,15 @@ func NewArticle() Article {
 }
 
 func (a Article) Get(c *gin.Context) {
-	id := convert.StrTo(c.Param("id")).MustUInt32()
+	param := service.ArticleRequest{ID: convert.StrTo(c.Param("id")).MustUInt32()}
 	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid err: %v", errs)
+		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
+	}
 	svc := service.New(c)
-	article, err := svc.GetArticleById(id)
+	article, err := svc.GetArticleById(&param)
 	if err != nil {
 		global.Logger.Errorf("svc.GetArticleById err: %v", err)
 		response.ToErrorResponse(errcode.ErrorGetArticleFail)
