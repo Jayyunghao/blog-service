@@ -8,6 +8,13 @@ App:
   MaxPageSize: 100
   LogSavePath: storage/logs
   LogFileName: app
+  UploadSavePath: storage/uploads
+  UploadServerUrl: http://127.0.0.1:8000/static
+  UploadImageMaxSize: 5  #MB,最大上传5MB的图片
+  UploadImageAllowExts:
+    - .jpg
+    - .jpeg
+    - .png
 Database:
   DBType: mysql
   Username: root
