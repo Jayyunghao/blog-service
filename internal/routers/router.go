@@ -3,6 +3,7 @@ package routers
 import (
 	_ "Practice/go-programming-tour-book/blog-service/docs"
 	"Practice/go-programming-tour-book/blog-service/global"
+	"Practice/go-programming-tour-book/blog-service/internal/middleware"
 	"Practice/go-programming-tour-book/blog-service/internal/routers/api"
 	v1 "Practice/go-programming-tour-book/blog-service/internal/routers/api/v1"
 	"net/http"
@@ -23,8 +24,10 @@ func NewRouter() *gin.Engine {
 	tag := v1.NewTag()
 	upload := api.NewUpload()
 	r.POST("/upload/file", upload.UploadFile)
+	r.POST("/auth", api.GetAuth)
 	r.StaticFS("/static", http.Dir(global.AppSetting.UploadSavePath))
 	apiv1 := r.Group("/api/v1")
+	apiv1.Use(middleware.JWT())
 	{
 		apiv1.POST("/tags", tag.Create)
 		apiv1.DELETE("/tags/:id", tag.Delete)

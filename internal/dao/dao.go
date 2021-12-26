@@ -68,7 +68,7 @@ func (d *Dao) GetArticleList(title, desc, content string, state uint8, page, pag
 	return article.List(d.engine, pageOffset, pageSize)
 }
 
-func (d *Dao) GetArticleById(id uint32) (model.Article,error) {
+func (d *Dao) GetArticleById(id uint32) (model.Article, error) {
 	article := model.Article{Model: &model.Model{ID: id}}
 	return article.Get(d.engine)
 }
@@ -101,4 +101,9 @@ func (d *Dao) UpdateArticle(id uint32, title, desc, content string, state uint8,
 func (d *Dao) DeleteArticle(id uint32) error {
 	article := model.Article{Model: &model.Model{ID: id}}
 	return article.Delete(d.engine)
+}
+
+func (d *Dao) GetAuth(appKey, appSecret string) (model.Auth, error) {
+	auth := model.Auth{AppKey: appKey, AppSecret: appSecret}
+	return auth.Get(d.engine)
 }

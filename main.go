@@ -66,9 +66,14 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\nserverSetting : %v\nappSetting : %v\n Database: %v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting)
+	err = setting.ReadSection("JWT", &global.JWTSetting)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("\nserverSetting : %v\nappSetting : %v\n Database: %v\nJWT: %v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting, global.AppSetting)
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
+	global.JWTSetting.Expire *= time.Second
 	return nil
 }
 

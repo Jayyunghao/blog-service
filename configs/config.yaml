@@ -26,3 +26,7 @@ Database:
   ParseTime: True
   MaxIdleConns: 10
   MaxOpenConns: 30
+JWT:
+  Secret: suoyudong
+  Issuser: blog-service
+  Expire: 7200
