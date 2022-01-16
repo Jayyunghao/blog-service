@@ -70,7 +70,11 @@ func setupSetting() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("\nserverSetting : %v\nappSetting : %v\n Database: %v\nJWT: %v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting, global.AppSetting)
+	err = setting.ReadSection("Email", &global.EmailSetting)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("\nserverSetting : %v\nappSetting : %v\n Database: %v\nJWT: %v\n Email:%v\n", global.ServerSetting, global.AppSetting, global.DatabaseSetting, global.AppSetting, global.EmailSetting)
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second

@@ -30,3 +30,12 @@ JWT:
   Secret: suoyudong
   Issuser: blog-service
   Expire: 7200
+Email:
+  Host: 111.qq.com
+  Port: 465
+  UserName: xxx@qq.com
+  Password: xxxxx
+  IsSSL: true 
+  From: xxxx@qq.com
+  To: 
+    - xxx@qq.com
