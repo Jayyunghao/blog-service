@@ -7,6 +7,7 @@ import (
 	"Practice/go-programming-tour-book/blog-service/internal/routers"
 	"Practice/go-programming-tour-book/blog-service/pkg/logger"
 	setting2 "Practice/go-programming-tour-book/blog-service/pkg/setting"
+	"Practice/go-programming-tour-book/blog-service/pkg/tracer"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,6 +47,10 @@ func init() {
 	err = setupDBEngine()
 	if err != nil {
 		log.Fatalf("init.setupDBEngine err:%v", err)
+	}
+	err = setupTracer()
+	if err != nil {
+		log.Fatalf("init.setupTracer err:%v", err)
 	}
 }
 
@@ -97,5 +102,14 @@ func setupDBEngine() error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func setupTracer() error {
+	jaegerTracer, _, err := tracer.NewJaegerTracer("blog-service","127.0.0.1:6831")
+	if err != nil {
+		return err
+	}
+	global.Tracer = jaegerTracer
 	return nil
 }

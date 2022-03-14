@@ -3,6 +3,7 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/net/context"
 	"io"
 	"log"
@@ -106,6 +107,17 @@ func (l *Logger) WithCallersFrames() *Logger {
 	ll := l.clone()
 	ll.callers = callers
 	return ll
+}
+
+func(l *Logger) WithTrace() *Logger {
+	ginCtx, ok := l.ctx.(*gin.Context)
+	if ok {
+		return l.WithFields(Fields{
+			"trace_id": ginCtx.MustGet("X-Trace-ID"),
+			"span_id": ginCtx.MustGet("X-Span-ID"),
+		})
+	}
+	return l
 }
 
 func (l *Logger) JSONFormat(level Level, message string) map[string]interface{} {
