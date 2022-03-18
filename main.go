@@ -8,9 +8,15 @@ import (
 	"Practice/go-programming-tour-book/blog-service/pkg/logger"
 	setting2 "Practice/go-programming-tour-book/blog-service/pkg/setting"
 	"Practice/go-programming-tour-book/blog-service/pkg/tracer"
+	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +27,22 @@ import (
 // @version 1.0
 // @description Go 语言编程之旅：一起用 Go 做项目
 // @termsOfService https://github.com/go-programming-tour-book
+var (
+	port string
+	runMode string
+	config string
+	isVersion bool
+	buildTime string
+	buildVersion string
+	gitCommitID string
+)
 func main() {
+	if isVersion {
+		fmt.Printf("build_time: %s\n",buildTime)
+		fmt.Printf("build_version: %s\n",buildVersion)
+		fmt.Printf("git_commit_id: %s\n",gitCommitID)
+		return
+	}
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()
 	s := &http.Server{
@@ -32,7 +53,24 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	global.Logger.Infof("%s: go-programming-tour-book/%s", "eddycjy", "blog_service")
-	s.ListenAndServe()
+	go func() {
+		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("s.ListenAndServe err: %v", err)
+		}
+	}()
+	//等待中断信号
+	quit := make(chan os.Signal)
+	//接收syscall.SIGINT和syscall.SIGTERM信号
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<- quit
+	log.Println("shut down server...")
+	//最大时间控制，通知该服务端它有5s的时间来处理原有的请求
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := s.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown:",err)
+	}
+	log.Println("Server exiting")
 }
 
 func init() {
@@ -52,10 +90,11 @@ func init() {
 	if err != nil {
 		log.Fatalf("init.setupTracer err:%v", err)
 	}
+	setupFlag()
 }
 
 func setupSetting() error {
-	setting, err := setting2.NewSetting()
+	setting, err := setting2.NewSetting(strings.Split(config,",")...)
 	if err != nil {
 		return err
 	}
@@ -83,6 +122,13 @@ func setupSetting() error {
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
 	global.JWTSetting.Expire *= time.Second
+
+	if port != "" {
+		global.ServerSetting.HttpPort = port
+	}
+	if runMode != "" {
+		global.ServerSetting.RunMode = runMode
+	}
 	return nil
 }
 
@@ -111,5 +157,14 @@ func setupTracer() error {
 		return err
 	}
 	global.Tracer = jaegerTracer
+	return nil
+}
+
+func setupFlag() error {
+	flag.StringVar(&port,"port","","启动端口")
+	flag.StringVar(&runMode,"mode", "", "启动模式")
+	flag.StringVar(&config,"config","configs/","指定要使用的配置文件路径")
+	flag.BoolVar(&isVersion,"version",false,"编译信息")
+	flag.Parse()
 	return nil
 }
