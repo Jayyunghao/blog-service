@@ -3,13 +3,18 @@ package setting
 import "time"
 
 type ServerSettinsS struct {
+	Addr         string
 	RunMode      string
 	HttpPort     string
+	HttpsPort    string
+	CertFile     string
+	KeyFile      string
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 }
 
 type AppSettingS struct {
+	Healthz              bool
 	DefaultPageSize      int
 	MaxPageSize          int
 	LogSavePath          string
@@ -65,8 +70,8 @@ func (s *Setting) ReadSection(k string, v interface{}) error {
 }
 
 func (s *Setting) ReloadAllSection() error {
-	for k,v := range sections {
-		err := s.ReadSection(k,v)
+	for k, v := range sections {
+		err := s.ReadSection(k, v)
 		if err != nil {
 			return err
 		}

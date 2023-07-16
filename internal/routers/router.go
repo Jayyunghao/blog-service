@@ -31,9 +31,16 @@ func NewRouter() *gin.Engine {
 		r.Use(middleware.AccessLog())
 		r.Use(middleware.Recovery())
 	}
-	r.Use(middleware.RateLimiter(methodLimiters))
-	r.Use(middleware.ContextTimeout(60 * time.Second))
-	r.Use(middleware.Translations())
+
+	if global.AppSetting.Healthz {
+		r.GET("/healthz", func(c *gin.Context) {
+			c.JSON(200, map[string]string{"status": "ok"})
+		})
+	}
+
+	r.Use(middleware.RateLimiter(methodLimiters))      //限速
+	r.Use(middleware.ContextTimeout(60 * time.Second)) //统一超时控制
+	r.Use(middleware.Translations())                   //
 	r.Use(middleware.Tracing())
 	//url := ginSwagger.URL("http://127.0.0.1:8000/swagger/doc.json")
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

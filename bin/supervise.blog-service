@@ -1,0 +1,45 @@
+#! /bin/sh
+
+#修改部分
+readonly PROC_NAME="blog-service"
+readonly SLEEP_SPAN=10 
+# 日志定义
+cd `dirname "${0}"` || exit 1
+readonly G_LOCAL_SBIN=`pwd`
+readonly G_LOCAL_LOG=`pwd`/../logs/${PROC_NAME}_output.log
+readonly G_LOCAL_MTLOG=`pwd`/../logs/${PROC_NAME}_monitor.log
+
+run()
+{
+    # quit if start proc failed 5 times during 10 mins
+    monitor_time=$[`date +%s`+600]
+    start_times=0
+    while true; do
+        ulimit -c unlimited
+        start_times=$[$start_times+1]
+        if [[ $(date +%s) > ${monitor_time} ]]; then
+            monitor_time=$[`date +%s`+600]
+            start_times=1
+        fi
+        if [[ "${start_times}" > 5 ]]; then
+            echo "`date`, Failed too many times, quit." >> ${G_LOCAL_MTLOG}
+            exit 1
+        fi
+
+        echo start`date` >> ${G_LOCAL_MTLOG}
+        #修改部分
+        env GOTRACEBACK=crash ${G_LOCAL_SBIN}/${PROC_NAME} --config="../conf/" --port=8000  >> ${G_LOCAL_LOG} 2>&1  
+        echo end`date`>> ${G_LOCAL_MTLOG}
+        sleep ${SLEEP_SPAN} 
+    done
+    exit 1
+}
+
+if [ $# -eq 1 ]; then
+    if [ x"${1}" = x"--run" ]; then
+        run
+    fi
+fi
+
+exec setsid "${0}" --run </dev/null >/dev/null 2>&1
+exit 1

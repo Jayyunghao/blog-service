@@ -5,8 +5,23 @@ import (
 	"net/http"
 )
 
+type ErrCode int64
+
+const (
+	ERR_CODE_OK              ErrCode = 200 //OK
+	ERR_CODE_INVALID_PARAMS  ErrCode = 400 // 无效参数
+	ERR_CODE_INTERNAL_ERROR  ErrCode = 500 // 超时
+	ERR_CODE_NOT_FOUND_TOKEN ErrCode = 405 //找不到token
+)
+
 type Error struct {
 	code    int
+	msg     string
+	details []string
+}
+
+type ErrorV2 struct {
+	code    ErrCode
 	msg     string
 	details []string
 }
@@ -19,6 +34,15 @@ func NewError(code int, msg string) *Error {
 	}
 	codes[code] = msg
 	return &Error{code: code, msg: msg}
+}
+
+func NewErrorV2(code ErrCode, str ...string) *ErrorV2 {
+	err := &ErrorV2{
+		code: code,
+		msg:  code.String(),
+	}
+	err.details = str
+	return err
 }
 
 func (e *Error) Code() int {

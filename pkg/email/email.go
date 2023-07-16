@@ -34,5 +34,3 @@ func (e *Email) SendMail(to []string, subject, body string) error {
 	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: e.IsSSL}
 	return dialer.DialAndSend(m)
 }
-
-

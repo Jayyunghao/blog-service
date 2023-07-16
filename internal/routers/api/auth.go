@@ -10,6 +10,7 @@ import (
 )
 
 func GetAuth(c *gin.Context) {
+
 	param := service.AuthRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
@@ -37,4 +38,5 @@ func GetAuth(c *gin.Context) {
 	response.ToResponse(gin.H{
 		"token": token,
 	})
+
 }

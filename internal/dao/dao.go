@@ -3,12 +3,22 @@ package dao
 import (
 	"Practice/go-programming-tour-book/blog-service/internal/model"
 	"Practice/go-programming-tour-book/blog-service/pkg/app"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type Dao struct {
 	engine *gorm.DB
+}
+
+type DaoEtcd struct {
+	engine string
+}
+
+//replace etcd
+func NewDaoEtcd(engine string) *DaoEtcd {
+	return &DaoEtcd{engine: engine}
 }
 
 func New(engine *gorm.DB) *Dao {

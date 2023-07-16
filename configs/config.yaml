@@ -1,13 +1,15 @@
 Server:
-  RunMode: debug
+  Addr: 
+  RunMode: release
   HttpPort: 8000
   ReadTimeout: 60
   WriteTimeout: 60
 App:
   DefaultPageSize: 10
   MaxPageSize: 100
-  LogSavePath: storage/logs
+  LogSavePath: ../logs
   LogFileName: app
+  LogFileExt: .INFO
   UploadSavePath: storage/uploads
   UploadServerUrl: http://127.0.0.1:8000/static
   UploadImageMaxSize: 5  #MB,最大上传5MB的图片
@@ -19,7 +21,7 @@ Database:
   DBType: mysql
   Username: root
   Password: 123456
-  Host: 127.0.0.1:5186
+  Host: 192.168.1.25:3306
   DBName: blog_service 
   TablePrefix: blog_
   Charset: utf8
